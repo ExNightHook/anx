@@ -1,0 +1,26 @@
+<%- include('layout', { title: 'Каталог', body: `
+<section class="page-section">
+    <div class="section-inner">
+        <h1 class="page-title">Каталог товаров</h1>
+        <div class="products-grid">
+            ${products.map(function(p) {
+                return \`
+            <a href="/product/\${p.slug}" class="product-card">
+                <div class="product-card-image">
+                    \${p.image_url
+                        ? '<img src="' + p.image_url + '" alt="' + (p.name || '') + '">'
+                        : '<div class="product-card-placeholder">◆</div>'
+                    }
+                </div>
+                <div class="product-card-body">
+                    <h3 class="product-card-title">\${p.name}</h3>
+                    <p class="product-card-desc">\${(p.short_desc || '').substring(0, 120)}</p>
+                </div>
+            </a>
+                \`;
+            }).join('')}
+            ${products.length === 0 ? '<p class="empty-state">Нет доступных товаров</p>' : ''}
+        </div>
+    </div>
+</section>
+` }) %>

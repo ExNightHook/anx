@@ -1,0 +1,67 @@
+<!DOCTYPE html>
+<html lang="ru">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title><%= typeof title !== 'undefined' ? title + ' — ' : '' %>Anxiety</title>
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700&display=swap" rel="stylesheet">
+    <link rel="stylesheet" href="/css/style.css">
+    <% if (typeof extraCss !== 'undefined') { %><%- extraCss %><% } %>
+    <script src="https://js.hcaptcha.com/1/api.js" async defer></script>
+</head>
+<body>
+    <!-- Navigation -->
+    <nav class="navbar">
+        <div class="navbar-inner">
+            <a href="/" class="navbar-brand">
+                <span class="brand-icon">◆</span>
+                <span class="brand-text">ANXIETY</span>
+            </a>
+            <div class="navbar-links">
+                <a href="/" class="nav-link <%= currentPath === '/' ? 'active' : '' %>">Главная</a>
+                <a href="/products" class="nav-link <%= currentPath === '/products' ? 'active' : '' %>">Товары</a>
+                <% if (user) { %>
+                    <a href="/profile" class="nav-link <%= currentPath === '/profile' ? 'active' : '' %>">Профиль</a>
+                    <% if (user.role === 'admin' || user.role === 'owner') { %>
+                        <a href="/api/panel" class="nav-link nav-admin">Панель</a>
+                    <% } %>
+                    <form action="/auth/logout" method="POST" class="nav-form">
+                        <button type="submit" class="nav-link nav-logout">Выйти</button>
+                    </form>
+                <% } else { %>
+                    <a href="/auth" class="nav-link nav-auth">Войти</a>
+                <% } %>
+            </div>
+        </div>
+    </nav>
+
+    <!-- Flash messages -->
+    <% if (flash && flash.error) { %>
+    <div class="flash flash-error"><%= flash.error %></div>
+    <% } %>
+    <% if (flash && flash.success) { %>
+    <div class="flash flash-success"><%= flash.success %></div>
+    <% } %>
+
+    <!-- Content -->
+    <main class="main-content">
+        <%- body %>
+    </main>
+
+    <!-- Footer -->
+    <footer class="footer">
+        <div class="footer-inner">
+            <span class="footer-brand">ANXIETY</span>
+            <div class="footer-links">
+                <a href="/terms">Оферта</a>
+                <a href="/privacy">Конфиденциальность</a>
+                <span class="footer-sep">·</span>
+                <a href="https://aesthesia.xyz">aesthesia.xyz</a>
+            </div>
+        </div>
+    </footer>
+
+    <script src="/js/main.js"></script>
+</body>
+</html>

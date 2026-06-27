@@ -1,0 +1,9 @@
+<%- include('layout', { title: code + ' — Ошибка', body: `
+<section class="error-section">
+    <div class="error-container">
+        <div class="error-code">${code}</div>
+        <p class="error-message">${message}</p>
+        <a href="/" class="btn btn-ghost">← На главную</a>
+    </div>
+</section>
+` }) %>

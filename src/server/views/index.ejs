@@ -1,0 +1,41 @@
+<%- include('layout', { title: 'Anxiety', body: `
+<section class="hero">
+    <div class="hero-inner">
+        <h1 class="hero-title">ANXIETY</h1>
+        <p class="hero-subtitle">Передовые решения для ваших задач</p>
+        <div class="hero-actions">
+            <a href="/products" class="btn btn-primary">Каталог товаров</a>
+            <% if (!user) { %>
+                <a href="/auth" class="btn btn-ghost">Войти в аккаунт</a>
+            <% } else { %>
+                <a href="/profile" class="btn btn-ghost">Мой профиль</a>
+            <% } %>
+        </div>
+    </div>
+</section>
+
+<section class="products-section">
+    <div class="section-inner">
+        <h2 class="section-title">Доступные товары</h2>
+        <div class="products-grid">
+            ${products.map(function(p) {
+                return \`
+            <a href="/product/\${p.slug}" class="product-card">
+                <div class="product-card-image">
+                    \${p.image_url
+                        ? '<img src="' + p.image_url + '" alt="' + (p.name || '') + '">'
+                        : '<div class="product-card-placeholder">◆</div>'
+                    }
+                </div>
+                <div class="product-card-body">
+                    <h3 class="product-card-title">\${p.name || 'Unnamed'}</h3>
+                    <p class="product-card-desc">\${(p.short_desc || '').substring(0, 100)}</p>
+                </div>
+            </a>
+                \`;
+            }).join('')}
+            ${products.length === 0 ? '<p class="empty-state">Нет доступных товаров</p>' : ''}
+        </div>
+    </div>
+</section>
+` }) %>
