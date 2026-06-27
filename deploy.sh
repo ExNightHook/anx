@@ -221,7 +221,7 @@ NGINXHTTP
         # Запускаем приложение перед certbot
         cd "$INSTALL_DIR"
         pm2 delete anxiety 2>/dev/null || true
-        pm2 start "node src/server/index.js" --name anxiety --env production 2>/dev/null || true
+        pm2 start src/server/index.js --name anxiety --cwd "$INSTALL_DIR" --env production 2>/dev/null || true
         sleep 2
 
         certbot --nginx -d "${DOMAIN}" --non-interactive --agree-tos --email admin@${DOMAIN} --redirect 2>&1 || {
@@ -266,7 +266,9 @@ server {
 
 # HTTPS
 server {
-    listen 443 ssl http2;
+    listen 443 ssl;
+    http2 on;
+
     server_name ${DOMAIN};
 
     ssl_certificate ${SSL_CERT};
@@ -286,10 +288,6 @@ server {
     add_header X-Frame-Options DENY;
     add_header Referrer-Policy strict-origin-when-cross-origin;
 
-    # Rate limiting
-    limit_req_zone \$binary_remote_addr zone=api:10m rate=30r/m;
-    limit_req_zone \$binary_remote_addr zone=general:10m rate=60r/m;
-
     client_max_body_size 10M;
 
     # Main site
@@ -303,18 +301,6 @@ server {
         proxy_set_header X-Forwarded-For \$proxy_add_x_forwarded_for;
         proxy_set_header X-Forwarded-Proto \$scheme;
         proxy_cache_bypass \$http_upgrade;
-    }
-
-    # Loader API — stricter rate limit
-    location /api/main/ {
-        limit_req zone=api burst=5 nodelay;
-        proxy_pass http://127.0.0.1:${APP_PORT};
-        proxy_http_version 1.1;
-        proxy_set_header Host \$host;
-        proxy_set_header X-Real-IP \$remote_addr;
-        proxy_set_header X-Forwarded-For \$proxy_add_x_forwarded_for;
-        proxy_set_header X-Forwarded-Proto \$scheme;
-        proxy_read_timeout 30s;
     }
 }
 NGINXHTTPS
@@ -367,7 +353,7 @@ if ! grep -q "NODE_ENV=production" "$INSTALL_DIR/.env" 2>/dev/null; then
 fi
 
 pm2 delete anxiety 2>/dev/null || true
-NODE_ENV=production pm2 start "node src/server/index.js" \
+NODE_ENV=production pm2 start src/server/index.js \
     --name anxiety \
     --cwd "$INSTALL_DIR" \
     --env production
@@ -381,6 +367,7 @@ log_ok "Приложение запущено через PM2"
 #  12. Certbot auto-renew (cron)
 # ============================================================
 log_info "Настройка авто-обновления SSL..."
+apt-get install -y -qq cron 2>/dev/null || true
 if ! crontab -l 2>/dev/null | grep -q "certbot renew"; then
     (crontab -l 2>/dev/null; echo "0 3 * * * certbot renew --quiet --deploy-hook 'systemctl reload nginx && pm2 restart anxiety'") | crontab -
     log_ok "Certbot auto-renew добавлен в cron (ежедневно в 3:00)"
