@@ -25,7 +25,7 @@ set -euo pipefail
 
 # --- Конфигурация ---
 DOMAIN="aesthesia.xyz"
-REPO_URL="https://github.com/YOUR_USERNAME/anxiety-aesthesia.git"  # ЗАМЕНИТЕ!
+REPO_URL="https://github.com/ExNightHook/anx.git"
 INSTALL_DIR="/opt/anxiety"
 NODE_VERSION="22"
 APP_PORT="3000"
