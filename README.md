@@ -1,11 +1,11 @@
-# Anxiety — aesthesia.xyz
+# 
 
 Полноценный сайт, панель управления и API для лоадера.
 
 ## Архитектура
 
 ```
-aesthesia.xyz (HTTPS, nginx reverse proxy)
+ (HTTPS, nginx reverse proxy)
 ├── /                  → Главная страница (EJS)
 ├── /products         → Каталог товаров
 ├── /product/:slug     → Страница товара
